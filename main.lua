@@ -6,6 +6,8 @@ local state = "menu" -- 현재 상태를 저장하는 변수 ("menu", "game1", "
 local pauseButton = {x = love.graphics.getWidth() - 110, y = 10, width = 100, height = 40}
 local previousState
 
+local gamelists = {"타겟", "닷지"}
+
 function love.load()
     font = love.graphics.newFont("essets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
     game1.load()
@@ -33,12 +35,12 @@ function love.draw()
     elseif state == "game2" then
         game2.draw()
     elseif state == "paused" then
-        drawPauseMenu()
         if previousState == "game1" then
             game1.draw()
         elseif previousState == "game2" then
             game2.draw()
         end
+        drawPauseMenu()
     end
     if state ~= "menu" then
         drawPauseButton()
@@ -87,9 +89,10 @@ end
 function drawMenu()
     love.graphics.setFont(font)
     love.graphics.print("메뉴", love.graphics.getWidth() / 2 - 50, 50)
-    for i = 1, 10 do
+    for i = 1, #gamelists do
         love.graphics.rectangle("line", love.graphics.getWidth() / 2 - 100, 100 + i * 50, 200, 40)
-        love.graphics.print("게임 " .. i, love.graphics.getWidth() / 2 - 50, 100 + i * 50)
+        love.graphics.print(gamelists[i], love.graphics.getWidth() / 2 - 50, 105 + i * 50)
+        -- love.graphics.print("게임 " .. i, love.graphics.getWidth() / 2 - 50, 100 + i * 50)
     end
 end
 

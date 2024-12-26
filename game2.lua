@@ -1,32 +1,37 @@
 local game2 = {}
-local target = {}
 local score = 0
-local targetImage
-local quad
+local player = {x = 0, y = 0}
 local enemies = {}
 local spawnTimer = 0
 
 function game2.load()
-    targetImage = love.graphics.newImage("essets/원형 타겟 이미지.png") -- 타겟 이미지 로드
-
-    -- 이미지의 일부를 잘라서 사용하기 위해 Quad 객체 생성
-    local imageWidth = targetImage:getWidth()
-    local imageHeight = targetImage:getHeight()
-    quad = love.graphics.newQuad(imageWidth * 5 / 32, imageHeight * 5 / 32, imageWidth * 22 / 32, imageHeight * 22 / 32, imageWidth, imageHeight) -- 이미지의 왼쪽 상단 1/4 부분을 사용
-
+    font = love.graphics.newFont("essets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
     game2.reset()
 end
 
 function game2.reset()
     score = 0
-    target.x = love.graphics.getWidth() / 2
-    target.y = love.graphics.getHeight() / 2
-    target.radius = 50
     enemies = {} -- 적들을 초기화
     spawnTimer = 0 -- 스폰 타이머 초기화
+
+    player.x = love.graphics.getWidth() / 2
+    player.y = love.graphics.getHeight() / 2
 end
 
 function game2.update(dt)
+    if love.keyboard.isDown("left") then
+        player.x = player.x - 100 * dt
+    end
+    if love.keyboard.isDown("right") then
+        player.x = player.x + 100 * dt
+    end
+    if love.keyboard.isDown("up") then
+        player.y = player.y - 100 * dt
+    end
+    if love.keyboard.isDown("down") then
+        player.y = player.y + 100 * dt
+    end
+
     spawnTimer = spawnTimer + dt
     if spawnTimer >= 2 then
         game2.spawnEnemy()
@@ -37,34 +42,44 @@ function game2.update(dt)
     for _, enemy in ipairs(enemies) do
         enemy.x = enemy.x + enemy.vx * dt
         enemy.y = enemy.y + enemy.vy * dt
+        if enemy.x < -30 or enemy.x > love.graphics.getWidth() + 30 or enemy.y < -30 or enemy.y > love.graphics.getHeight() + 30 then
+            table.remove(enemies, _)
+        end
     end
+
+    -- 충돌 검사
+    for i = #enemies, 1, -1 do
+        local enemy = enemies[i]
+        local dx = player.x - enemy.x
+        local dy = player.y - enemy.y
+        local distance = math.sqrt(dx * dx + dy * dy)
+
+        if distance < 30 then
+            game2.reset()
+        end
+    end
+
+    score = score + 1
 end
 
 function game2.draw()
+    love.graphics.setColor(1, 1, 1)
     love.graphics.setFont(font)
     love.graphics.print("Score: " .. score, 10, 10)
+    love.graphics.print("enemies: " .. #enemies, 10, 50)
 
-    -- 타겟 그리기
-    love.graphics.draw(targetImage, quad, target.x - target.radius, target.y - target.radius)
+    -- 플레이어 그리기
+    love.graphics.circle("fill", player.x, player.y, 20)
 
     -- 적 그리기
     for _, enemy in ipairs(enemies) do
-        love.graphics.circle("fill", enemy.x, enemy.y, 20)
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.circle("fill", enemy.x, enemy.y, 10)
     end
 end
 
 function game2.mousepressed(x, y, button)
-    if button == 1 then -- Left mouse button
-        local dx = target.x - x
-        local dy = target.y - y
-        local distance = math.sqrt(dx * dx + dy * dy)
-
-        if distance < target.radius then
-            score = score + 1
-            target.x = math.random(target.radius, love.graphics.getWidth() - target.radius)
-            target.y = math.random(target.radius, love.graphics.getHeight() - target.radius)
-        end
-    end
+    -- do nothing
 end
 
 function game2.spawnEnemy()
