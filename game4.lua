@@ -11,6 +11,8 @@ local cardBackImage
 local cardWidth, cardHeight = 112, 160 -- 카드 크기 증가
 local cardSpacing = 10 -- 카드 간의 간격 추가
 local scale = 4 -- 이미지 스케일링 비율
+local showTime = 1 -- 카드 앞면을 보여주는 시간
+local timer = 0 -- 타이머 변수
 
 function game4.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -18,10 +20,10 @@ function game4.load()
     for i = 1, 9 do
         cardImages[i] = love.graphics.newImage("assets/images/card_H" .. i .. ".png")
     end
-    resetCards()
+    game4.reset()
 end
 
-function resetCards()
+function game4.reset()
     cards = {}
     selectedCards = {}
     local cardIndices = {}
@@ -33,15 +35,21 @@ function resetCards()
         local index = table.remove(cardIndices, love.math.random(#cardIndices))
         table.insert(cards, {image = cardImages[index], matched = false})
     end
+    timer = 0
+    love.graphics.setBackgroundColor(0.2, 0.5, 0.8)
 end
 
 function game4.update(dt)
     if #selectedCards == 2 then
-        if selectedCards[1].image == selectedCards[2].image then
-            selectedCards[1].matched = true
-            selectedCards[2].matched = true
+        timer = timer + dt
+        if timer >= showTime then
+            if selectedCards[1].image == selectedCards[2].image then
+                selectedCards[1].matched = true
+                selectedCards[2].matched = true
+            end
+            selectedCards = {}
+            timer = 0
         end
-        selectedCards = {}
     end
 end
 
@@ -58,21 +66,17 @@ function game4.draw()
 end
 
 function game4.mousepressed(x, y, button)
-    if button == 1 then
+    if button == 1 and #selectedCards < 2 then
         for i, card in ipairs(cards) do
             local cardX = (i - 1) % 6 * (cardWidth + cardSpacing) + 50
             local cardY = math.floor((i - 1) / 6) * (cardHeight + cardSpacing) + 50
             if x > cardX and x < cardX + cardWidth and y > cardY and y < cardY + cardHeight then
-                if not card.matched and #selectedCards < 2 and not (selectedCards[1] == card) then
+                if not card.matched and not (selectedCards[1] == card) then
                     table.insert(selectedCards, card)
                 end
             end
         end
     end
-end
-
-function game4.reset()
-    resetCards()
 end
 
 return game4
