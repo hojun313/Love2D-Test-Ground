@@ -44,6 +44,7 @@ function game4.update(dt)
         timer = timer + dt
         if timer >= showTime then
             if selectedCards[1].image == selectedCards[2].image then
+                score = score + 1
                 selectedCards[1].matched = true
                 selectedCards[2].matched = true
             end
@@ -63,6 +64,7 @@ function game4.draw()
             love.graphics.draw(cardBackImage, x, y, 0, scale, scale)
         end
     end
+    love.graphics.print("Score: " .. score, 10, 10)
 end
 
 function game4.mousepressed(x, y, button)
