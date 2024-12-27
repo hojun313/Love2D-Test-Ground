@@ -6,15 +6,13 @@ local quad
 local font
 
 function game1.load()
-    targetImage = love.graphics.newImage("essets/원형 타겟 이미지.png") -- 타겟 이미지 로드
-    font = love.graphics.newFont("essets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
+    targetImage = love.graphics.newImage("assets/images/원형 타겟 이미지.png") -- 타겟 이미지 로드
+    font = love.graphics.newFont("assets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
 
     -- 이미지의 일부를 잘라서 사용하기 위해 Quad 객체 생성
     local imageWidth = targetImage:getWidth()
     local imageHeight = targetImage:getHeight()
     quad = love.graphics.newQuad(imageWidth * 5 / 32, imageHeight * 5 / 32, imageWidth * 22 / 32, imageHeight * 22 / 32, imageWidth, imageHeight) -- 이미지의 왼쪽 상단 1/4 부분을 사용
-
-    game1.reset()
 end
 
 function game1.reset()

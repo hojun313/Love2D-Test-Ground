@@ -5,7 +5,7 @@ local enemies = {}
 local spawnTimer = 0
 
 function game2.load()
-    font = love.graphics.newFont("essets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
+    font = love.graphics.newFont("assets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
     game2.reset()
 end
 

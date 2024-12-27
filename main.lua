@@ -1,17 +1,19 @@
 local game1 = require("game1")
 local game2 = require("game2")
+local game3 = require("game3")
 
 local font
 local state = "menu" -- 현재 상태를 저장하는 변수 ("menu", "game1", "game2", "paused")
 local pauseButton = {x = love.graphics.getWidth() - 110, y = 10, width = 100, height = 40}
 local previousState
 
-local gamelists = {"타겟", "닷지"}
+local gamelists = {"타겟", "닷지", "캔"}
 
 function love.load()
-    font = love.graphics.newFont("essets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
+    font = love.graphics.newFont("assets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
     game1.load()
     game2.load()
+    game3.load()
 end
 
 function love.update(dt)
@@ -19,12 +21,15 @@ function love.update(dt)
         game1.update(dt)
     elseif state == "game2" then
         game2.update(dt)
+    elseif state == "game3" then
+        game3.update(dt)
     end
 end
 
 function resetGame()
     game1.reset()
     game2.reset()
+    game3.reset()
 end
 
 function love.draw()
@@ -34,11 +39,15 @@ function love.draw()
         game1.draw()
     elseif state == "game2" then
         game2.draw()
+    elseif state == "game3" then
+        game3.draw()
     elseif state == "paused" then
         if previousState == "game1" then
             game1.draw()
         elseif previousState == "game2" then
             game2.draw()
+        elseif previousState == "game3" then
+            game3.draw()
         end
         drawPauseMenu()
     end
@@ -48,51 +57,59 @@ function love.draw()
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
-    if state == "menu" then
-        if button == 1 then -- Left mouse button
-            for i = 1, 10 do
-                if x > love.graphics.getWidth() / 2 - 100 and x < love.graphics.getWidth() / 2 + 100 and y > 100 + i * 50 and y < 140 + i * 50 then
-                    if i == 1 then
-                        resetGame()
-                        state = "game1"
-                    elseif i == 2 then
-                        resetGame()
-                        state = "game2"
-                    end
+    if state == "game1" then
+        game1.mousepressed(x, y, button)
+    elseif state == "game2" then
+        game2.mousepressed(x, y, button)
+    elseif state == "game3" then
+        game3.mousepressed(x, y, button)
+    elseif state == "menu" then
+        mousepressedMenu(x, y, button)
+    elseif state == "paused" then
+        mousepressedPauseMenu(x, y, button)
+    end
+
+    if state ~= "menu" then
+        if button == 1 and x > pauseButton.x and x < pauseButton.x + pauseButton.width and y > pauseButton.y and y < pauseButton.y + pauseButton.height then
+            previousState = state
+            state = "paused"
+        end
+    end
+end
+
+function mousepressedMenu(x, y, button)
+    if button == 1 then -- Left mouse button
+        for i = 1, 10 do
+            if x > love.graphics.getWidth() / 2 - 100 and x < love.graphics.getWidth() / 2 + 100 and y > 100 + i * 50 and y < 140 + i * 50 then
+                if i == 1 then
+                    state = "game1"
+                elseif i == 2 then
+                    state = "game2"
+                elseif i == 3 then
+                    state = "game3"
                 end
             end
         end
-    elseif state == "game1" then
-        game1.mousepressed(x, y, button)
-        if button == 1 and x > pauseButton.x and x < pauseButton.x + pauseButton.width and y > pauseButton.y and y < pauseButton.y + pauseButton.height then
-            previousState = state
-            state = "paused"
-        end
-    elseif state == "game2" then
-        game2.mousepressed(x, y, button)
-        if button == 1 and x > pauseButton.x and x < pauseButton.x + pauseButton.width and y > pauseButton.y and y < pauseButton.y + pauseButton.height then
-            previousState = state
-            state = "paused"
-        end
-    elseif state == "paused" then
-        if button == 1 then -- Left mouse button
-            if x > love.graphics.getWidth() / 2 - 100 and x < love.graphics.getWidth() / 2 + 100 and y > love.graphics.getHeight() / 2 and y < love.graphics.getHeight() / 2 + 40 then
-                state = previousState
-            elseif x > love.graphics.getWidth() / 2 - 100 and x < love.graphics.getWidth() / 2 + 100 and y > love.graphics.getHeight() / 2 + 50 and y < love.graphics.getHeight() / 2 + 90 then
-                state = "menu"
-                resetGame()
-            end
+    end
+end
+
+function mousepressedPauseMenu(x, y, button)
+    if button == 1 then -- Left mouse button
+        if x > love.graphics.getWidth() / 2 - 100 and x < love.graphics.getWidth() / 2 + 100 and y > love.graphics.getHeight() / 2 and y < love.graphics.getHeight() / 2 + 40 then
+            state = previousState
+        elseif x > love.graphics.getWidth() / 2 - 100 and x < love.graphics.getWidth() / 2 + 100 and y > love.graphics.getHeight() / 2 + 50 and y < love.graphics.getHeight() / 2 + 90 then
+            state = "menu"
+            resetGame()
         end
     end
 end
 
 function drawMenu()
     love.graphics.setFont(font)
-    love.graphics.print("메뉴", love.graphics.getWidth() / 2 - 50, 50)
+    love.graphics.print("게임을 선택하세요!", love.graphics.getWidth() / 2 - 50, 50)
     for i = 1, #gamelists do
         love.graphics.rectangle("line", love.graphics.getWidth() / 2 - 100, 100 + i * 50, 200, 40)
         love.graphics.print(gamelists[i], love.graphics.getWidth() / 2 - 50, 105 + i * 50)
-        -- love.graphics.print("게임 " .. i, love.graphics.getWidth() / 2 - 50, 100 + i * 50)
     end
 end
 
