@@ -41,15 +41,21 @@ end
 
 function game4.update(dt)
     if #selectedCards == 2 then
-        timer = timer + dt
-        if timer >= showTime then
-            if selectedCards[1].image == selectedCards[2].image then
-                score = score + 1
-                selectedCards[1].matched = true
-                selectedCards[2].matched = true
-            end
+        if selectedCards[1].image == selectedCards[2].image then
+            selectedCards[1].matched = true
+            selectedCards[2].matched = true
+            score = score + 1
             selectedCards = {}
-            timer = 0
+        elseif selectedCards[1].image ~= selectedCards[2].image then
+            timer = timer + dt
+            if timer >= showTime then
+                selectedCards = {}
+                timer = 0
+        end
+        -- timer = timer + dt
+        -- if timer >= showTime then
+        --     selectedCards = {}
+        --     timer = 0
         end
     end
 end
