@@ -1,3 +1,4 @@
+-- 상황에 따라 달라지는 충돌 계산
 local game3 = {}
 local font
 local can = {x = love.graphics.getWidth() / 2, y = love.graphics.getHeight() / 2, width = 50, height = 100, rotation = 0}

@@ -1,3 +1,4 @@
+-- 스포너, 플레이어 조작
 local game2 = {}
 local score = 0
 local player = {x = 0, y = 0}

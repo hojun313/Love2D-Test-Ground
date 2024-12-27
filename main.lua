@@ -1,19 +1,21 @@
 local game1 = require("game1")
 local game2 = require("game2")
 local game3 = require("game3")
+local game4 = require("game4")
 
 local font
-local state = "menu" -- 현재 상태를 저장하는 변수 ("menu", "game1", "game2", "paused")
+local state = "menu" -- 현재 상태를 저장하는 변수 ("menu", "game1", "game2", "game3", "game4", "paused")
 local pauseButton = {x = love.graphics.getWidth() - 110, y = 10, width = 100, height = 40}
 local previousState
 
-local gamelists = {"타겟", "닷지", "캔"}
+local gamelists = {"타겟", "닷지", "캔", "카드"}
 
 function love.load()
     font = love.graphics.newFont("assets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
     game1.load()
     game2.load()
     game3.load()
+    game4.load()
 end
 
 function love.update(dt)
@@ -23,6 +25,8 @@ function love.update(dt)
         game2.update(dt)
     elseif state == "game3" then
         game3.update(dt)
+    elseif state == "game4" then
+        game4.update(dt)
     end
 end
 
@@ -30,6 +34,7 @@ function resetGame()
     game1.reset()
     game2.reset()
     game3.reset()
+    game4.reset()
 end
 
 function love.draw()
@@ -41,6 +46,8 @@ function love.draw()
         game2.draw()
     elseif state == "game3" then
         game3.draw()
+    elseif state == "game4" then
+        game4.draw()
     elseif state == "paused" then
         if previousState == "game1" then
             game1.draw()
@@ -48,6 +55,8 @@ function love.draw()
             game2.draw()
         elseif previousState == "game3" then
             game3.draw()
+        elseif previousState == "game4" then
+            game4.draw()
         end
         drawPauseMenu()
     end
@@ -63,6 +72,8 @@ function love.mousepressed(x, y, button, istouch, presses)
         game2.mousepressed(x, y, button)
     elseif state == "game3" then
         game3.mousepressed(x, y, button)
+    elseif state == "game4" then
+        game4.mousepressed(x, y, button)
     elseif state == "menu" then
         mousepressedMenu(x, y, button)
     elseif state == "paused" then
@@ -87,6 +98,8 @@ function mousepressedMenu(x, y, button)
                     state = "game2"
                 elseif i == 3 then
                     state = "game3"
+                elseif i == 4 then
+                    state = "game4"
                 end
             end
         end
