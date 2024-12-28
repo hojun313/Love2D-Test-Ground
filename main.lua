@@ -2,13 +2,14 @@ local game1 = require("game1")
 local game2 = require("game2")
 local game3 = require("game3")
 local game4 = require("game4")
+local game5 = require("game5")
 
 local font
-local state = "menu" -- 현재 상태를 저장하는 변수 ("menu", "game1", "game2", "game3", "game4", "paused")
+local state = "menu" -- 현재 상태를 저장하는 변수 ("menu", "game1", "game2", "game3", "game4", "game5", "paused")
 local pauseButton = {x = love.graphics.getWidth() - 110, y = 10, width = 100, height = 40}
 local previousState
 
-local gamelists = {"타겟", "닷지", "캔", "카드"}
+local gamelists = {"타겟", "닷지", "캔", "카드", "퍼즐"}
 
 function love.load()
     font = love.graphics.newFont("assets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
@@ -16,6 +17,7 @@ function love.load()
     game2.load()
     game3.load()
     game4.load()
+    game5.load()
 end
 
 function love.update(dt)
@@ -27,6 +29,8 @@ function love.update(dt)
         game3.update(dt)
     elseif state == "game4" then
         game4.update(dt)
+    elseif state == "game5" then
+        game5.update(dt)
     end
 end
 
@@ -35,6 +39,7 @@ function resetGame()
     game2.reset()
     game3.reset()
     game4.reset()
+    game5.reset()
 end
 
 function love.draw()
@@ -48,6 +53,8 @@ function love.draw()
         game3.draw()
     elseif state == "game4" then
         game4.draw()
+    elseif state == "game5" then
+        game5.draw()
     elseif state == "paused" then
         if previousState == "game1" then
             game1.draw()
@@ -57,6 +64,8 @@ function love.draw()
             game3.draw()
         elseif previousState == "game4" then
             game4.draw()
+        elseif previousState == "game5" then
+            game5.draw()
         end
         drawPauseMenu()
     end
@@ -74,6 +83,8 @@ function love.mousepressed(x, y, button, istouch, presses)
         game3.mousepressed(x, y, button)
     elseif state == "game4" then
         game4.mousepressed(x, y, button)
+    elseif state == "game5" then
+        game5.mousepressed(x, y, button)
     elseif state == "menu" then
         mousepressedMenu(x, y, button)
     elseif state == "paused" then
@@ -100,6 +111,8 @@ function mousepressedMenu(x, y, button)
                     state = "game3"
                 elseif i == 4 then
                     state = "game4"
+                elseif i == 5 then
+                    state = "game5"
                 end
             end
         end
