@@ -3,13 +3,17 @@ local game2 = require("game2")
 local game3 = require("game3")
 local game4 = require("game4")
 local game5 = require("game5")
+local game6 = require("game6")
+local game7 = require("game7")
+local game8 = require("game8")
+local game9 = require("game9") -- 새로운 게임 추가
 
 local font
-local state = "menu" -- 현재 상태를 저장하는 변수 ("menu", "game1", "game2", "game3", "game4", "game5", "paused")
+local state = "menu" -- 현재 상태를 저장하는 변수 ("menu", "game1", "game2", "game3", "game4", "game5", "game6", "game7", "game8", "game9", "paused")
 local pauseButton = {x = love.graphics.getWidth() - 110, y = 10, width = 100, height = 40}
 local previousState
 
-local gamelists = {"타겟", "닷지", "캔", "카드", "퍼즐"}
+local gamelists = {"타겟", "닷지", "캔", "카드", "퍼즐", "슈팅", "스키", "우주 탐험가", "카드 이동"} -- 새로운 게임 추가
 
 function love.load()
     font = love.graphics.newFont("assets/fonts/Jua-Regular.ttf", 32) -- 한글을 지원하는 폰트 로드
@@ -18,6 +22,10 @@ function love.load()
     game3.load()
     game4.load()
     game5.load()
+    game6.load()
+    game7.load()
+    game8.load()
+    game9.load() -- 새로운 게임 로드
 end
 
 function love.update(dt)
@@ -31,6 +39,14 @@ function love.update(dt)
         game4.update(dt)
     elseif state == "game5" then
         game5.update(dt)
+    elseif state == "game6" then
+        game6.update(dt)
+    elseif state == "game7" then
+        game7.update(dt)
+    elseif state == "game8" then
+        game8.update(dt)
+    elseif state == "game9" then
+        game9.update(dt) -- 새로운 게임 업데이트
     end
 end
 
@@ -40,6 +56,10 @@ function resetGame()
     game3.reset()
     game4.reset()
     game5.reset()
+    game6.reset()
+    game7.reset()
+    game8.reset()
+    game9.reset() -- 새로운 게임 리셋
 end
 
 function love.draw()
@@ -55,6 +75,14 @@ function love.draw()
         game4.draw()
     elseif state == "game5" then
         game5.draw()
+    elseif state == "game6" then
+        game6.draw()
+    elseif state == "game7" then
+        game7.draw()
+    elseif state == "game8" then
+        game8.draw()
+    elseif state == "game9" then
+        game9.draw() -- 새로운 게임 그리기
     elseif state == "paused" then
         if previousState == "game1" then
             game1.draw()
@@ -66,6 +94,14 @@ function love.draw()
             game4.draw()
         elseif previousState == "game5" then
             game5.draw()
+        elseif previousState == "game6" then
+            game6.draw()
+        elseif previousState == "game7" then
+            game7.draw()
+        elseif previousState == "game8" then
+            game8.draw()
+        elseif previousState == "game9" then
+            game9.draw() -- 새로운 게임 그리기
         end
         drawPauseMenu()
     end
@@ -85,6 +121,14 @@ function love.mousepressed(x, y, button, istouch, presses)
         game4.mousepressed(x, y, button)
     elseif state == "game5" then
         game5.mousepressed(x, y, button)
+    elseif state == "game6" then
+        game6.mousepressed(x, y, button)
+    elseif state == "game7" then
+        game7.mousepressed(x, y, button)
+    elseif state == "game8" then
+        game8.mousepressed(x, y, button)
+    elseif state == "game9" then
+        game9.mousepressed(x, y, button) -- 새로운 게임 마우스 입력 처리
     elseif state == "menu" then
         mousepressedMenu(x, y, button)
     elseif state == "paused" then
@@ -96,6 +140,14 @@ function love.mousepressed(x, y, button, istouch, presses)
             previousState = state
             state = "paused"
         end
+    end
+end
+
+function love.keypressed(key)
+    if state == "game8" then
+        game8.keypressed(key)
+    elseif state == "game9" then
+        game9.keypressed(key) -- 새로운 게임 키 입력 처리
     end
 end
 
@@ -113,6 +165,14 @@ function mousepressedMenu(x, y, button)
                     state = "game4"
                 elseif i == 5 then
                     state = "game5"
+                elseif i == 6 then
+                    state = "game6"
+                elseif i == 7 then
+                    state = "game7"
+                elseif i == 8 then
+                    state = "game8"
+                elseif i == 9 then
+                    state = "game9" -- 새로운 게임 선택
                 end
             end
         end

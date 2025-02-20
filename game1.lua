@@ -13,6 +13,7 @@ function game1.load()
     local imageWidth = targetImage:getWidth()
     local imageHeight = targetImage:getHeight()
     quad = love.graphics.newQuad(imageWidth * 5 / 32, imageHeight * 5 / 32, imageWidth * 22 / 32, imageHeight * 22 / 32, imageWidth, imageHeight) -- 이미지의 왼쪽 상단 1/4 부분을 사용
+    game1.reset()
 end
 
 function game1.reset()
